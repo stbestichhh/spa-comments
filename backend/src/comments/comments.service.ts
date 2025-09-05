@@ -12,6 +12,7 @@ import { RaitoService } from '@raito-cache/nestjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { COMMENT_CREATED_EVENT } from '../shared/constants';
 import { AttachmentRepository } from './attachment.repository';
+import { sanitizeCommentText } from '../shared/helpers/sanitize-html.helper';
 
 @Injectable()
 export class CommentsService {
@@ -38,8 +39,10 @@ export class CommentsService {
       }
     }
 
+    const safeText = sanitizeCommentText(createCommentDto.text);
+
     const comment = await this.commentsRepository.create({
-      text: createCommentDto.text,
+      text: safeText,
       parentId: createCommentDto.parentId ?? null,
       userId,
     });
