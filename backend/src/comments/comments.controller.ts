@@ -3,40 +3,50 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  UseGuards,
+  Query,
   Param,
-  Delete,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { JwtGuard } from '../shared/guards/jwt.guard';
+import { User } from '../shared/decorators/user.decorator';
+import { UserDto } from '../shared/dto/user.dto';
+import { FindCommentsQueryDto } from './dto/find-comments-query.dto';
+import { SortBy } from '../shared/enums/sortBy.enum';
+import { SortOrder } from '../shared/enums/sort-order.enum';
 
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  public async create(
+    @User() { user_id }: UserDto,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.commentsService.create(user_id, createCommentDto);
   }
 
   @Get()
-  findAll() {
-    return this.commentsService.findAll();
+  public async findAll(
+    @Query()
+    {
+      page = 1,
+      limit = 25,
+      sortBy = SortBy.CREATED_AT,
+      order = SortOrder.DESC,
+    }: FindCommentsQueryDto,
+  ) {
+    return this.commentsService.findAll(page, limit, sortBy, order);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  @Get(':id/replies')
+  public async getReplies(
+    @Param('id') commentId: string,
+    @Query() { page = 1, limit = 25 }: FindCommentsQueryDto,
+  ) {
+    return this.commentsService.findReplies(commentId, page, limit);
   }
 }

@@ -2,6 +2,8 @@ import {
   AllowNull,
   BelongsTo,
   Column,
+  DataType,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -13,9 +15,10 @@ import { UserModel } from './user.model';
 export interface CommentCreationAttributes {
   text: string;
   userId: string;
+  parentId: string | null;
 }
 
-@Table({ tableName: 'comments' })
+@Table({ tableName: 'comments', timestamps: true })
 export class CommentModel extends Model<
   CommentModel,
   CommentCreationAttributes
@@ -32,14 +35,15 @@ export class CommentModel extends Model<
 
   @AllowNull
   @ForeignKey(() => CommentModel)
-  @Column
-  declare parentId: string;
+  @Default(null)
+  @Column({ type: DataType.STRING })
+  declare parentId: string | null;
 
   @AllowNull(false)
   @ForeignKey(() => UserModel)
   @Column
   declare userId: string;
 
-  @BelongsTo(() => UserModel)
+  @BelongsTo(() => UserModel, { as: 'user' })
   declare user: UserModel;
 }

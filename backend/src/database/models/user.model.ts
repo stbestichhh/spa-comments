@@ -2,6 +2,7 @@ import {
   AllowNull,
   Column,
   DataType,
+  Default,
   HasMany,
   Model,
   PrimaryKey,
@@ -17,7 +18,7 @@ export interface UserCreationAttributes {
   homepage: string | null;
 }
 
-@Table({ tableName: 'users' })
+@Table({ tableName: 'users', timestamps: true })
 export class UserModel extends Model<UserModel, UserCreationAttributes> {
   @PrimaryKey
   @Unique
@@ -40,6 +41,7 @@ export class UserModel extends Model<UserModel, UserCreationAttributes> {
   declare password: string;
 
   @AllowNull
+  @Default(null)
   @Column({ type: DataType.STRING })
   declare homepage: string | null;
 
