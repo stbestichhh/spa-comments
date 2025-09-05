@@ -4,9 +4,12 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigValidationService } from './shared/services/config-validation.service';
 import { UsersModule } from './users/users.module';
+import { RaitoModule } from '@raito-cache/nestjs';
+import { EnvEnum } from './shared/enums/env.enum';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -18,6 +21,15 @@ import { UsersModule } from './users/users.module';
       validationSchema: ConfigValidationService.createSchema(),
     }),
     UsersModule,
+    RaitoModule.registerAsync({
+      useFactory: (config: ConfigService) => ({
+        port: config.getOrThrow(EnvEnum.RAITO_PORT),
+        host: config.getOrThrow(EnvEnum.RAITO_HOST),
+        ttl: 10000,
+      }),
+      inject: [ConfigService],
+    }),
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
