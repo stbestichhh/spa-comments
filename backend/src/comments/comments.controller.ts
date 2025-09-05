@@ -8,6 +8,7 @@ import {
   Param,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -19,12 +20,14 @@ import { SortBy } from '../shared/enums/sortBy.enum';
 import { SortOrder } from '../shared/enums/sort-order.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QueueService } from '../queue/queue.service';
+import { CaptchaService } from '../auth/captcha.service';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
     private readonly commentsService: CommentsService,
     private readonly fileQueue: QueueService,
+    private readonly captchaService: CaptchaService,
   ) {}
 
   @UseGuards(JwtGuard)
@@ -35,6 +38,16 @@ export class CommentsController {
     @Body() createCommentDto: CreateCommentDto,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
+    const { captcha, sessionId } = createCommentDto;
+
+    if (
+      !captcha ||
+      !sessionId ||
+      !this.captchaService.validate(sessionId, captcha)
+    ) {
+      throw new BadRequestException('Invalid Captcha');
+    }
+
     let filePath: string | undefined;
 
     if (file) {

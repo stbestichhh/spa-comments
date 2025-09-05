@@ -11,4 +11,14 @@ export class CreateCommentDto {
   @IsNotEmpty()
   @IsOptional()
   parentId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  captcha?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  sessionId?: string;
 }

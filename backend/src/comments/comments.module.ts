@@ -5,9 +5,10 @@ import { CommentsRepository } from './comments.repository';
 import { CommentsListener } from './comments.listener';
 import { AttachmentRepository } from './attachment.repository';
 import { QueueModule } from '../queue/queue.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [QueueModule],
+  imports: [QueueModule, AuthModule],
   controllers: [CommentsController],
   providers: [
     CommentsService,

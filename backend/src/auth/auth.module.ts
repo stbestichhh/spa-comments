@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { EnvEnum } from '../shared/enums/env.enum';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { CaptchaService } from './captcha.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, CaptchaService],
+  exports: [CaptchaService],
 })
 export class AuthModule {}
