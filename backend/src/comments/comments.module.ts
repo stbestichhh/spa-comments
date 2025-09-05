@@ -3,9 +3,17 @@ import { CommentsService } from './comments.service';
 import { CommentsController } from './comments.controller';
 import { CommentsRepository } from './comments.repository';
 import { CommentsListener } from './comments.listener';
+import { AttachmentRepository } from './attachment.repository';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
+  imports: [QueueModule],
   controllers: [CommentsController],
-  providers: [CommentsService, CommentsRepository, CommentsListener],
+  providers: [
+    CommentsService,
+    CommentsRepository,
+    CommentsListener,
+    AttachmentRepository,
+  ],
 })
 export class CommentsModule {}

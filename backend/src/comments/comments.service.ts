@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsRepository } from './comments.repository';
 import { SortBy } from '../shared/enums/sortBy.enum';
@@ -7,6 +11,7 @@ import { UserModel } from '../database/models/user.model';
 import { RaitoService } from '@raito-cache/nestjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { COMMENT_CREATED_EVENT } from '../shared/constants';
+import { AttachmentRepository } from './attachment.repository';
 
 @Injectable()
 export class CommentsService {
@@ -14,9 +19,14 @@ export class CommentsService {
     private readonly commentsRepository: CommentsRepository,
     private readonly cacheService: RaitoService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly attachmentRepository: AttachmentRepository,
   ) {}
 
-  public async create(userId: string, createCommentDto: CreateCommentDto) {
+  public async create(
+    userId: string,
+    createCommentDto: CreateCommentDto,
+    filePath?: string,
+  ) {
     if (createCommentDto.parentId) {
       const parent = await this.commentsRepository.findByPk(
         createCommentDto.parentId,
@@ -34,9 +44,29 @@ export class CommentsService {
       userId,
     });
 
+    if (filePath) {
+      await this.attachmentRepository.insert({
+        commentId: comment.comment_id,
+        filePath,
+        type: this.detectFileType(filePath),
+      });
+    }
+
     this.eventEmitter.emit(COMMENT_CREATED_EVENT, comment);
 
     return comment;
+  }
+
+  private detectFileType(filePath: string): string {
+    const ext = filePath.split('.').pop()?.toLowerCase();
+
+    if (!ext) {
+      throw new BadRequestException(`File must have extension`);
+    }
+
+    if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return 'image';
+    if (ext === 'txt') return 'text';
+    return 'unknown';
   }
 
   public async findAll(

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { EnvEnum } from '../shared/enums/env.enum';
 import { UserModel } from './models/user.model';
 import { CommentModel } from './models/comment.model';
+import { AttachmentModel } from './models/attachment.model';
 
 @Global()
 @Module({
@@ -16,14 +17,14 @@ import { CommentModel } from './models/comment.model';
         username: config.getOrThrow(EnvEnum.DATABASE_USER),
         password: config.getOrThrow(EnvEnum.DATABASE_PASSWORD),
         database: config.getOrThrow(EnvEnum.DATABASE_NAME),
-        models: [UserModel, CommentModel],
+        models: [UserModel, CommentModel, AttachmentModel],
         autoLoadModels: true,
         sync: { alter: false, force: false },
         logging: (msg) => Logger.log(msg, SequelizeModule.name),
       }),
       inject: [ConfigService],
     }),
-    SequelizeModule.forFeature([UserModel, CommentModel]),
+    SequelizeModule.forFeature([UserModel, CommentModel, AttachmentModel]),
   ],
   exports: [SequelizeModule],
 })

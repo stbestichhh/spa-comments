@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { RaitoModule } from '@raito-cache/nestjs';
 import { EnvEnum } from './shared/enums/env.enum';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       inject: [ConfigService],
     }),
     EventEmitterModule.forRoot(),
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

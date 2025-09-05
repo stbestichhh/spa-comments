@@ -5,12 +5,14 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasOne,
   Model,
   PrimaryKey,
   Table,
   Unique,
 } from 'sequelize-typescript';
 import { UserModel } from './user.model';
+import { AttachmentModel } from './attachment.model';
 
 export interface CommentCreationAttributes {
   text: string;
@@ -46,4 +48,7 @@ export class CommentModel extends Model<
 
   @BelongsTo(() => UserModel, { as: 'user' })
   declare user: UserModel;
+
+  @HasOne(() => AttachmentModel)
+  declare attachment: AttachmentModel;
 }

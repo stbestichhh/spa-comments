@@ -6,6 +6,8 @@ import {
   UseGuards,
   Query,
   Param,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -15,18 +17,31 @@ import { UserDto } from '../shared/dto/user.dto';
 import { FindCommentsQueryDto } from './dto/find-comments-query.dto';
 import { SortBy } from '../shared/enums/sortBy.enum';
 import { SortOrder } from '../shared/enums/sort-order.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { QueueService } from '../queue/queue.service';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(
+    private readonly commentsService: CommentsService,
+    private readonly fileQueue: QueueService,
+  ) {}
 
   @UseGuards(JwtGuard)
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   public async create(
     @User() { user_id }: UserDto,
     @Body() createCommentDto: CreateCommentDto,
+    @UploadedFile('file') file: Express.Multer.File,
   ) {
-    return this.commentsService.create(user_id, createCommentDto);
+    let filePath: string | undefined;
+
+    if (file) {
+      filePath = await this.fileQueue.addJob(file);
+    }
+
+    return this.commentsService.create(user_id, createCommentDto, filePath);
   }
 
   @Get()
