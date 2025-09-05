@@ -13,6 +13,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { COMMENT_CREATED_EVENT } from '../shared/constants';
 import { AttachmentRepository } from './attachment.repository';
 import { sanitizeCommentText } from '../shared/helpers/sanitize-html.helper';
+import { CommentsGateway } from './comments.gateway';
 
 @Injectable()
 export class CommentsService {
@@ -21,6 +22,7 @@ export class CommentsService {
     private readonly cacheService: RaitoService,
     private readonly eventEmitter: EventEmitter2,
     private readonly attachmentRepository: AttachmentRepository,
+    private readonly commentsGateway: CommentsGateway,
   ) {}
 
   public async create(
@@ -56,6 +58,7 @@ export class CommentsService {
     }
 
     this.eventEmitter.emit(COMMENT_CREATED_EVENT, comment);
+    this.commentsGateway.emitNewComment(comment);
 
     return comment;
   }

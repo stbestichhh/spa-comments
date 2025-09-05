@@ -6,6 +6,7 @@ import { CommentsListener } from './comments.listener';
 import { AttachmentRepository } from './attachment.repository';
 import { QueueModule } from '../queue/queue.module';
 import { AuthModule } from '../auth/auth.module';
+import { CommentsGateway } from './comments.gateway';
 
 @Module({
   imports: [QueueModule, AuthModule],
@@ -15,6 +16,7 @@ import { AuthModule } from '../auth/auth.module';
     CommentsRepository,
     CommentsListener,
     AttachmentRepository,
+    CommentsGateway,
   ],
 })
 export class CommentsModule {}
