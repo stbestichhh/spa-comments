@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigValidationService } from './shared/services/config-validation.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigValidationService } from './shared/services/config-validation.ser
       isGlobal: true,
       validationSchema: ConfigValidationService.createSchema(),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

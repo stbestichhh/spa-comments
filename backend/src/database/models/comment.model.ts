@@ -24,22 +24,22 @@ export class CommentModel extends Model<
   @Unique
   @AllowNull(false)
   @Column
-  comment_id: string;
+  declare comment_id: string;
 
   @AllowNull(false)
   @Column
-  text: string;
+  declare text: string;
 
   @AllowNull
   @ForeignKey(() => CommentModel)
   @Column
-  parentId: string;
+  declare parentId: string;
 
   @AllowNull(false)
   @ForeignKey(() => UserModel)
   @Column
-  userId: string;
+  declare userId: string;
 
   @BelongsTo(() => UserModel)
-  user: UserModel;
+  declare user: UserModel;
 }

@@ -1,10 +1,11 @@
-import { Logger, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 import { EnvEnum } from '../shared/enums/env.enum';
 import { UserModel } from './models/user.model';
 import { CommentModel } from './models/comment.model';
 
+@Global()
 @Module({
   imports: [
     SequelizeModule.forRootAsync({

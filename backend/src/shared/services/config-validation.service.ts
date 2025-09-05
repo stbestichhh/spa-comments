@@ -11,6 +11,7 @@ export class ConfigValidationService {
       DATABASE_USER: Joi.string().required(),
       REDIS_HOST: Joi.string().hostname().required(),
       REDIS_PORT: Joi.number().port().required(),
+      JWT_SECRET: Joi.string().required(),
     });
   }
 }
