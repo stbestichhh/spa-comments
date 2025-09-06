@@ -18,6 +18,14 @@ services:
       RAITO_HOST: raito
       RAITO_PORT: 9110
 
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
   postgres:
     image: postgres:15
     container_name: postgres-db

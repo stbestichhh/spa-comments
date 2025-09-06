@@ -6,6 +6,7 @@ import { SortBy } from '../shared/enums/sortBy.enum';
 import { SortOrder } from '../shared/enums/sort-order.enum';
 import { UserModel } from '../database/models/user.model';
 import { Sequelize } from 'sequelize-typescript';
+import { AttachmentModel } from 'src/database/models/attachment.model';
 
 @Injectable()
 export class CommentsRepository extends AbstractRepository<CommentModel> {
@@ -34,6 +35,8 @@ export class CommentsRepository extends AbstractRepository<CommentModel> {
           as: 'user',
           attributes: ['user_id', 'username', 'email'],
         },
+        { model: AttachmentModel, attributes:['attachment_id', 'filePath', 'type'] },
+        
       ],
       order: [
         [isSortByUser ? Sequelize.col(`user.${sortBy}`) : sortBy, sortOrder],

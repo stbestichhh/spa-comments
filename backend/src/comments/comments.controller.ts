@@ -45,7 +45,7 @@ export class CommentsController {
       !sessionId ||
       !this.captchaService.validate(sessionId, captcha)
     ) {
-      // throw new BadRequestException('Invalid Captcha');
+      throw new BadRequestException('Invalid Captcha');
     }
 
     let filePath: string | undefined;

@@ -14,6 +14,7 @@ import { COMMENT_CREATED_EVENT } from '../shared/constants';
 import { AttachmentRepository } from './attachment.repository';
 import { sanitizeCommentText } from '../shared/helpers/sanitize-html.helper';
 import { CommentsGateway } from './comments.gateway';
+import { AttachmentModel } from 'src/database/models/attachment.model';
 
 @Injectable()
 export class CommentsService {
@@ -57,10 +58,19 @@ export class CommentsService {
       });
     }
 
-    this.eventEmitter.emit(COMMENT_CREATED_EVENT, comment);
-    this.commentsGateway.emitNewComment(comment);
+    const full = await this.commentsRepository.findByPk(comment.comment_id, {
+      include: [
+        { model: UserModel, attributes: ['user_id', 'username', 'email'] },
+        { model: AttachmentModel, attributes:['attachment_id', 'filePath', 'type'] }
+      ],
+    })
 
-    return comment;
+    const payload = full?.get({ plain: true }) ?? comment.get({ plain: true });
+  
+    this.eventEmitter.emit(COMMENT_CREATED_EVENT, payload);
+    this.commentsGateway.emitNewComment(payload);
+
+    return payload;
   }
 
   private detectFileType(filePath: string): string {
@@ -111,6 +121,7 @@ export class CommentsService {
       {
         include: [
           { model: UserModel, attributes: ['user_id', 'username', 'email'] },
+          { model: AttachmentModel, attributes:['attachment_id', 'filePath', 'type'] },
         ],
         order: [['createdAt', 'ASC']],
         limit,

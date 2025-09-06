@@ -12,6 +12,7 @@ export class FindCommentsQueryDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => Number(value))
   @IsOptional()
   limit?: number;
 

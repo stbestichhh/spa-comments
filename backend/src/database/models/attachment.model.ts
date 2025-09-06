@@ -40,6 +40,6 @@ export class AttachmentModel extends Model<
   @Column
   declare commentId: string;
 
-  @BelongsTo(() => CommentModel)
+  @BelongsTo(() => CommentModel, { as: 'attachment' })
   declare comment: CommentModel;
 }
