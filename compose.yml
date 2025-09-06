@@ -39,7 +39,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   raito:
-    image: stbestich/raito-cache:latest_arm64
+    image: stbestich/raito-cache:latest_amd64
     container_name: raito
     ports:
       - "9110:9110"
