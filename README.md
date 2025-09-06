@@ -1,3 +1,17 @@
+
+## ⚙️ How to Run
+
+1. Clone the repository.  
+2. Build and run containers:  
+   ```bash
+   docker-compose up --build
+3. Open in browser:
+
+Backend API → http://localhost:3000
+
+Frontend SPA → http://localhost:8080
+
+
 # 🗨️ Comments SPA
 
 A full-featured **SPA application for working with comments**, built with **NestJS (backend)** and **React + TypeScript (frontend)**.  
@@ -39,15 +53,3 @@ This project implements key requirements of a typical Junior+/Middle-level test 
 - **DevOps:** Docker, Docker Compose, Nginx  
 
 ---
-
-## ⚙️ How to Run
-
-1. Clone the repository.  
-2. Build and run containers:  
-   ```bash
-   docker-compose up --build
-3. Open in browser:
-
-Backend API → http://localhost:3000
-
-Frontend SPA → http://localhost:8080
